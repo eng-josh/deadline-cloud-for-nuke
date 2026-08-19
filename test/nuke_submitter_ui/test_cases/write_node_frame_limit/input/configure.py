@@ -2,10 +2,14 @@
 
 """Dialog configurator for the write_node_frame_limit case.
 
-Port of the Squish write_node_limit_gui case: select the write node that
-declares its own frame-range limit (5-10, set in scene.py) and submit with
-the frame-range override off, so the golden's Frames parameter proves the
-node's limit wins over the wider scene range (1-100).
+Port of the Squish write_node_limit_gui case: select a write node that
+declares its own frame-range limit and submit with the override off, so the
+golden's Frames parameter proves the node's limit wins over the wider scene
+range (1-100).
+
+The scene has two limited nodes, 5-10 on Write1 and 40-60 on Write2, so a
+lookup that resolved the limit off the wrong node would show up as 40-60
+rather than passing quietly.
 """
 
 

@@ -5,5 +5,6 @@ assetReferences:
     - <REPO_ROOT>/test/nuke_submitter_ui/test_cases/write_node_frame_limit/actual/write_node_frame_limit.nk
   outputs:
     directories:
-    - <REPO_ROOT>/test/nuke_submitter_ui/test_cases/write_node_frame_limit/actual/renders
+    - <REPO_ROOT>/test/nuke_submitter_ui/test_cases/write_node_frame_limit/actual/renders/write1
+    - <REPO_ROOT>/test/nuke_submitter_ui/test_cases/write_node_frame_limit/actual/renders/write2
   referencedPaths: []

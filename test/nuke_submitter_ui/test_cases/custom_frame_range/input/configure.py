@@ -17,6 +17,5 @@ def configure(dialog) -> None:
     dialog.switch_to_job_specific_tab()
     dialog.select_write_node("Write1")
     dialog.set_frame_range(FRAME_RANGE)
-    assert (
-        dialog.frame_range_field().element().value == FRAME_RANGE
-    ), "frame-range override did not take the typed value"
+    typed = dialog.frame_range()
+    assert typed == FRAME_RANGE, f"frame-range field shows {typed!r}"

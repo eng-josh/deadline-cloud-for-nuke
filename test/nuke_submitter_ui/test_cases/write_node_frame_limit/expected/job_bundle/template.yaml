@@ -50,6 +50,7 @@ parameterDefinitions:
   allowedValues:
   - All Write Nodes
   - Write1
+  - Write2
 - name: View
   type: STRING
   userInterface:

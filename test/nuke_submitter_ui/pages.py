@@ -330,17 +330,38 @@ class NukeSubmitterDialog(SharedSubmitterDialog):
         self._front()
         set_checkbox(self.window, CHECKBOX_OVERRIDE_FRAME_RANGE, enabled, timeout=WIDGET_TIMEOUT)
 
-    def override_frame_range_enabled(self) -> bool:
+    def override_frame_range_enabled(self, timeout: float = WIDGET_TIMEOUT) -> bool:
         """Whether the frame-range override is checked.
 
         Cases that verify range inheritance assert this is off rather than
         forcing it, so a change to the dialog's default surfaces as a failure
         instead of being silently overwritten.
+
+        Polled like the other readers, and a checkbox reporting no state
+        counts as unread rather than unchecked: ``is_checked`` maps a missing
+        state to False, which is what those cases assert, so a mid-churn read
+        would pass them for the wrong reason.
         """
-        self._front()
-        box = self.window.descendant(f'check_box[name="{CHECKBOX_OVERRIDE_FRAME_RANGE}"]')
-        box.wait_visible(timeout=WIDGET_TIMEOUT)
-        return is_checked(box)
+        selector = f'check_box[name="{CHECKBOX_OVERRIDE_FRAME_RANGE}"]'
+        deadline = time.monotonic() + timeout
+        last_error: Exception | None = None
+        while time.monotonic() < deadline:
+            self._front()
+            try:
+                box = self.window.descendant(selector)
+                if box.element().checked is not None:
+                    return is_checked(box)
+            except Exception as exc:
+                # Transient AX-tree churn (see module notes); retry.
+                last_error = exc
+            time.sleep(0.5)
+        raise TimeoutError(
+            f"Could not read the {CHECKBOX_OVERRIDE_FRAME_RANGE!r} checkbox: {last_error!r}"
+        )
+
+    def frame_range(self) -> str:
+        """The frame-range field's current text."""
+        return self.frame_range_field().element().value or ""
 
     def set_frame_range(self, frame_range: str) -> None:
         """Enable the override and type a frame range (e.g. ``1-5``)."""
